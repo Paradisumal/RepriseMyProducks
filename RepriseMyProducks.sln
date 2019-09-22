@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Producks.Data", "Producks.Data\Producks.Data.csproj", "{170BA786-EE89-46CB-8D36-54E3398A5DBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Producks.Web", "Producks.Web\Producks.Web.csproj", "{303533C7-5BBD-4B20-A509-9AB1C2FDF57E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{170BA786-EE89-46CB-8D36-54E3398A5DBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{170BA786-EE89-46CB-8D36-54E3398A5DBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{170BA786-EE89-46CB-8D36-54E3398A5DBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{170BA786-EE89-46CB-8D36-54E3398A5DBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303533C7-5BBD-4B20-A509-9AB1C2FDF57E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{303533C7-5BBD-4B20-A509-9AB1C2FDF57E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{303533C7-5BBD-4B20-A509-9AB1C2FDF57E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303533C7-5BBD-4B20-A509-9AB1C2FDF57E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
