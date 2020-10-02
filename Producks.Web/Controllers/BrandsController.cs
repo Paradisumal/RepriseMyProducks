@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Producks.Data;
+using Producks.Web.Models;
 
 namespace Producks.Web.Controllers
 {
@@ -21,7 +22,14 @@ namespace Producks.Web.Controllers
         // GET: Brands
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Brands.ToListAsync());
+            var viewModel = await _context.Brands.Select(b => new BrandViewModel
+                                                 {
+                                                     Id = b.Id,
+                                                     Name = b.Name,
+                                                     Active = b.Active
+                                                 }).ToListAsync();
+
+            return View(viewModel);
         }
 
         // GET: Brands/Details/5
@@ -32,14 +40,19 @@ namespace Producks.Web.Controllers
                 return NotFound();
             }
 
-            var brand = await _context.Brands
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (brand == null)
+            var viewModel = await _context.Brands.Select(b => new BrandViewModel
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Active = b.Active
+            }).FirstOrDefaultAsync(c => c.Id == id);
+
+            if (viewModel == null)
             {
                 return NotFound();
             }
 
-            return View(brand);
+            return View(viewModel);
         }
 
         // GET: Brands/Create
@@ -73,11 +86,15 @@ namespace Producks.Web.Controllers
             }
 
             var brand = await _context.Brands.FindAsync(id);
+
             if (brand == null)
             {
                 return NotFound();
             }
-            return View(brand);
+
+            var viewModel = new BrandViewModel { Id = brand.Id, Name = brand.Name, Active = brand.Active};
+            
+            return View(viewModel);
         }
 
         // POST: Brands/Edit/5
@@ -112,7 +129,10 @@ namespace Producks.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+
+            var viewModel = new BrandViewModel { Id = brand.Id, Name = brand.Name, Active = brand.Active };
+
+            return View(viewModel);
         }
 
         // GET: Brands/Delete/5
@@ -130,7 +150,9 @@ namespace Producks.Web.Controllers
                 return NotFound();
             }
 
-            return View(brand);
+            var viewModel = new BrandViewModel { Id = brand.Id, Name = brand.Name, Active = brand.Active };
+
+            return View(viewModel);
         }
 
         // POST: Brands/Delete/5

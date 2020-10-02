@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Producks.Data;
+using Producks.Web.Models;
 
 namespace Producks.Web.Controllers
 {
@@ -21,7 +22,15 @@ namespace Producks.Web.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var viewModel = await _context.Categories.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                Active = c.Active
+            }).ToListAsync();
+
+            return View(viewModel);
         }
 
         // GET: Categories/Details/5
@@ -32,14 +41,20 @@ namespace Producks.Web.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            var viewModel = await _context.Categories.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description,
+                Active = c.Active
+            }).FirstOrDefaultAsync(d => d.Id == id);
+
+            if (viewModel == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(viewModel);
         }
 
         // GET: Categories/Create
@@ -73,11 +88,15 @@ namespace Producks.Web.Controllers
             }
 
             var category = await _context.Categories.FindAsync(id);
+
             if (category == null)
             {
                 return NotFound();
             }
-            return View(category);
+
+            var viewModel = new CategoryViewModel { Id = category.Id, Name = category.Name, Description = category.Description, Active = category.Active };
+
+            return View(viewModel);
         }
 
         // POST: Categories/Edit/5
@@ -112,7 +131,10 @@ namespace Producks.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+
+            var viewModel = new CategoryViewModel { Id = category.Id, Name = category.Name, Description = category.Description, Active = category.Active };
+
+            return View(viewModel);
         }
 
         // GET: Categories/Delete/5
@@ -130,7 +152,9 @@ namespace Producks.Web.Controllers
                 return NotFound();
             }
 
-            return View(category);
+            var viewModel = new CategoryViewModel { Id = category.Id, Name = category.Name, Description = category.Description, Active = category.Active };
+
+            return View(viewModel);
         }
 
         // POST: Categories/Delete/5
