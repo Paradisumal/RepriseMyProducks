@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Producks.Web.Models
 {
-    public class ProductDto
+    public class ProductViewModel
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }
