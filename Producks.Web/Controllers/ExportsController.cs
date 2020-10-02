@@ -24,12 +24,11 @@ namespace Producks.Web.Controllers
         [HttpGet("api/Brands")]
         public async Task<IActionResult> GetBrands()
         {
-            var brands = await _context.Brands
+            var brands = await _context.Brands.Where(c => c.Active == true)
                                        .Select(b => new BrandDto
                                        {
                                            Id = b.Id,
                                            Name = b.Name,
-                                           Active = b.Active
                                        })
                                        .ToListAsync();
             return Ok(brands);
@@ -39,13 +38,12 @@ namespace Producks.Web.Controllers
         [HttpGet("api/Categories")]
         public async Task<IActionResult> GetCategories()
         {
-            var categories = await _context.Categories
+            var categories = await _context.Categories.Where(d => d.Active == true)
                                        .Select(c => new CategoryDto
                                        {
                                            Id = c.Id,
                                            Name = c.Name,
                                            Description = c.Description,
-                                           Active = c.Active
                                        })
                                        .ToListAsync();
             return Ok(categories);
@@ -58,7 +56,8 @@ namespace Producks.Web.Controllers
                                                      [FromQuery, Required] double minPrice,
                                                      [FromQuery, Required] double maxPrice)
         {
-            var products = await _context.Products.Where(s => s.BrandId == brandId)
+            var products = await _context.Products.Where(t => t.Active == true)
+                                       .Where(s => s.BrandId == brandId)
                                        .Where(r => r.CategoryId == categoryId)
                                        .Where(q => q.Price > minPrice && q.Price < maxPrice)
                                        .Select(p => new ProductDto
@@ -70,7 +69,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })
@@ -83,7 +81,8 @@ namespace Producks.Web.Controllers
         public async Task<IActionResult> GetProductsByBrandAndCategory([FromQuery, Required] int brandId,
                                                                        [FromQuery, Required] int categoryId)
         {
-            var products = await _context.Products.Where(r => r.BrandId == brandId)
+            var products = await _context.Products.Where(s => s.Active == true)
+                                       .Where(r => r.BrandId == brandId)
                                        .Where(q => q.CategoryId == categoryId)
                                        .Select(p => new ProductDto
                                        {
@@ -94,7 +93,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })
@@ -108,7 +106,8 @@ namespace Producks.Web.Controllers
                                                                          [FromQuery, Required] double minPrice,
                                                                          [FromQuery, Required] double maxPrice)
         {
-            var products = await _context.Products.Where(r => r.BrandId == brandId)
+            var products = await _context.Products.Where(s => s.Active == true)
+                                       .Where(r => r.BrandId == brandId)
                                        .Where(q => q.Price > minPrice && q.Price < maxPrice)
                                        .Select(p => new ProductDto
                                        {
@@ -119,7 +118,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })
@@ -133,7 +131,8 @@ namespace Producks.Web.Controllers
                                                                             [FromQuery, Required] double minPrice,
                                                                             [FromQuery, Required] double maxPrice)
         {
-            var products = await _context.Products.Where(r => r.CategoryId == categoryId)
+            var products = await _context.Products.Where(s => s.Active == true)
+                                       .Where(r => r.CategoryId == categoryId)
                                        .Where(q => q.Price > minPrice && q.Price < maxPrice)
                                        .Select(p => new ProductDto
                                        {
@@ -144,7 +143,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })
@@ -156,7 +154,8 @@ namespace Producks.Web.Controllers
         [HttpGet("api/Products/byBrand")]
         public async Task<IActionResult> GetProductsByBrand([FromQuery, Required] int brandId)
         {
-            var products = await _context.Products.Where(q => q.BrandId == brandId)
+            var products = await _context.Products.Where(r => r.Active == true)
+                                       .Where(q => q.BrandId == brandId)
                                        .Select(p => new ProductDto
                                        {
                                            Id = p.Id,
@@ -166,7 +165,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })
@@ -178,7 +176,8 @@ namespace Producks.Web.Controllers
         [HttpGet("api/Products/byCategory")]
         public async Task<IActionResult> GetProductsByCategory([FromQuery, Required] int categoryId)
         {
-            var products = await _context.Products.Where(q => q.CategoryId == categoryId)
+            var products = await _context.Products.Where(r => r.Active == true)
+                                       .Where(q => q.CategoryId == categoryId)
                                        .Select(p => new ProductDto
                                        {
                                            Id = p.Id,
@@ -188,7 +187,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })
@@ -201,7 +199,8 @@ namespace Producks.Web.Controllers
         public async Task<IActionResult> GetProductsByPriceRange([FromQuery, Required] double minPrice,
                                                                  [FromQuery, Required] double maxPrice)
         {
-            var products = await _context.Products.Where(q => q.Price > minPrice && q.Price < maxPrice)
+            var products = await _context.Products.Where(r => r.Active == true)
+                                       .Where(q => q.Price > minPrice && q.Price < maxPrice)
                                        .Select(p => new ProductDto
                                        {
                                            Id = p.Id,
@@ -211,7 +210,6 @@ namespace Producks.Web.Controllers
                                            Description = p.Description,
                                            Price = p.Price,
                                            StockLevel = p.StockLevel,
-                                           Active = p.Active,
                                            Category = p.Category.Name,
                                            Brand = p.Brand.Name
                                        })

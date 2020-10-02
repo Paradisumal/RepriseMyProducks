@@ -14,7 +14,6 @@ namespace Producks.Web.Models
         public string Description { get; set; }
         public double Price { get; set; }
         public int StockLevel { get; set; }
-        public bool Active { get; set; }
 
         public String Category { get; set; }
         public String Brand { get; set; }
