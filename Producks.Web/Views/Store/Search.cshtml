@@ -1,0 +1,30 @@
+﻿@model Producks.Web.Models.ProductDrillDown
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1>Index</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label">Category</label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BrandId" class="control-label">Brand</label>
+                <select asp-for="BrandId" class="form-control" asp-items="ViewBag.BrandId"></select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary"  asp-action="Products" asp-route-CategoryId="CategoryId" asp-route-BrandId="BrandId"/>
+            </div>
+        </form>
+    </div>
+</div>

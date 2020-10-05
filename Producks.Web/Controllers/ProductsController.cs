@@ -120,8 +120,6 @@ namespace Producks.Web.Controllers
                 Price = product.Price,
                 StockLevel = product.StockLevel,
                 Active = product.Active,
-                //Category = product.Category.Name,
-                //Brand = product.Brand.Name
             };
 
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
