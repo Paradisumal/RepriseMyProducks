@@ -35,12 +35,28 @@ namespace Producks.Web.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Products(ProductDrillDown productDrillDown)
+        public async Task<IActionResult> Products([FromQuery, Required] int categoryId,
+                                                     [FromQuery, Required] int brandId)
         {
-            var products = _context.Products.Where(q => q.Active == true)
-                                            .Where(p => p.CategoryId == productDrillDown.CategoryId)
-                                            .Where(p => p.BrandId == productDrillDown.BrandId).Include(p => p.Brand);
-            return View(await products.ToListAsync());
+            var products = await _context.Products.Where(q => q.Active == true)
+                                            .Where(p => p.CategoryId == categoryId)
+                                            .Where(p => p.BrandId == brandId).Include(p => p.Brand).ToListAsync();
+
+            var viewModel = await _context.Products.Select(p => new ProductStoreViewModel
+            {
+                Id = p.Id,
+                CategoryId = p.CategoryId,
+                BrandId = p.BrandId,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockLevel = p.StockLevel,
+                Active = p.Active,
+                Category = p.Category.Name,
+                Brand = p.Brand.Name
+            }).ToListAsync();
+
+            return View(viewModel);
         }
     }
 }
