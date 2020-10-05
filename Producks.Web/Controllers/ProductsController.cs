@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Producks.Data;
+using Producks.Web.Models;
 
 namespace Producks.Web.Controllers
 {
@@ -21,8 +22,21 @@ namespace Producks.Web.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var storeDb = _context.Products.Include(p => p.Brand).Include(p => p.Category);
-            return View(await storeDb.ToListAsync());
+            var viewModel = await _context.Products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                CategoryId = p.CategoryId,
+                BrandId = p.BrandId,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockLevel = p.StockLevel,
+                Active = p.Active,
+                Category = p.Category.Name,
+                Brand = p.Brand.Name
+            }).ToListAsync();
+
+            return View(viewModel);
         }
 
         // GET: Products/Details/5
@@ -33,16 +47,26 @@ namespace Producks.Web.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            var viewModel = await _context.Products.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                CategoryId = p.CategoryId,
+                BrandId = p.BrandId,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockLevel = p.StockLevel,
+                Active = p.Active,
+                Category = p.Category.Name,
+                Brand = p.Brand.Name
+            }).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (viewModel == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(viewModel);
         }
 
         // GET: Products/Create
@@ -80,13 +104,29 @@ namespace Producks.Web.Controllers
             }
 
             var product = await _context.Products.FindAsync(id);
+
             if (product == null)
             {
                 return NotFound();
             }
+
+            var viewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                CategoryId = product.CategoryId,
+                BrandId = product.BrandId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockLevel = product.StockLevel,
+                Active = product.Active,
+                //Category = product.Category.Name,
+                //Brand = product.Brand.Name
+            };
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Description", product.CategoryId);
-            return View(product);
+            return View(viewModel);
         }
 
         // POST: Products/Edit/5
@@ -121,9 +161,24 @@ namespace Producks.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            var viewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                CategoryId = product.CategoryId,
+                BrandId = product.BrandId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockLevel = product.StockLevel,
+                Active = product.Active,
+                Category = product.Category.Name,
+                Brand = product.Brand.Name
+            };
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Description", product.CategoryId);
-            return View(product);
+            return View(viewModel);
         }
 
         // GET: Products/Delete/5
@@ -138,12 +193,27 @@ namespace Producks.Web.Controllers
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            var viewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                CategoryId = product.CategoryId,
+                BrandId = product.BrandId,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                StockLevel = product.StockLevel,
+                Active = product.Active,
+                Category = product.Category.Name,
+                Brand = product.Brand.Name
+            };
+
+            return View(viewModel);
         }
 
         // POST: Products/Delete/5

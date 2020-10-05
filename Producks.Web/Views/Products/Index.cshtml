@@ -1,4 +1,4 @@
-@model IEnumerable<Producks.Data.Product>
+@model IEnumerable<Producks.Web.Models.ProductViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -55,10 +55,10 @@
                 @Html.DisplayFor(modelItem => item.Active)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Category.Description)
+                @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Brand.Name)
+                @Html.DisplayFor(modelItem => item.Brand)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

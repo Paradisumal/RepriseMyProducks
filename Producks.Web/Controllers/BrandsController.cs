@@ -145,6 +145,7 @@ namespace Producks.Web.Controllers
 
             var brand = await _context.Brands
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (brand == null)
             {
                 return NotFound();
