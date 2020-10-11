@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,8 +24,36 @@ namespace Producks.Web.Controllers
         // GET: ProductSearch
         public async Task<IActionResult> Search()
         {
-            var categories = await _context.Categories.Where(c => c.Active == true).ToListAsync();
-            var brands = await _context.Brands.Where(c => c.Active == true).ToListAsync();
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://undercutters.azurewebsites.net");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            client.Timeout = TimeSpan.FromSeconds(5);
+
+            HttpResponseMessage categoryResponse = await client.GetAsync("api/Category");
+            categoryResponse.EnsureSuccessStatusCode();
+
+            IEnumerable<UCCategoryDto> ucCategories = await categoryResponse.Content.ReadAsAsync<IEnumerable<UCCategoryDto>>();
+            var ucCategoryList = ucCategories.Select(c => new Category 
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+
+            HttpResponseMessage brandResponse = await client.GetAsync("api/Brand");
+            brandResponse.EnsureSuccessStatusCode();
+            var ucBrandList = ucCategories.Select(c => new Brand
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+
+            IEnumerable<UCBrandDto> ucBrands = await brandResponse.Content.ReadAsAsync<IEnumerable<UCBrandDto>>();
+
+            var localCategories = await _context.Categories.Where(c => c.Active == true).ToListAsync();
+            var localBrands = await _context.Brands.Where(c => c.Active == true).ToListAsync();
+
+            var categories = localCategories.Concat(ucCategoryList);
+            var brands = localBrands.Concat(ucBrandList);
 
             var viewModel = new ProductDrillDown { };
 
