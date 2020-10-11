@@ -41,13 +41,13 @@ namespace Producks.Web.Controllers
 
             HttpResponseMessage brandResponse = await client.GetAsync("api/Brand");
             brandResponse.EnsureSuccessStatusCode();
-            var ucBrandList = ucCategories.Select(c => new Brand
+
+            IEnumerable<UCBrandDto> ucBrands = await brandResponse.Content.ReadAsAsync<IEnumerable<UCBrandDto>>();
+            var ucBrandList = ucBrands.Select(c => new Brand
             {
                 Id = c.Id,
                 Name = c.Name
             }).ToList();
-
-            IEnumerable<UCBrandDto> ucBrands = await brandResponse.Content.ReadAsAsync<IEnumerable<UCBrandDto>>();
 
             var localCategories = await _context.Categories.Where(c => c.Active == true).ToListAsync();
             var localBrands = await _context.Brands.Where(c => c.Active == true).ToListAsync();
@@ -65,11 +65,38 @@ namespace Producks.Web.Controllers
 
         // GET: Products
         public async Task<IActionResult> Products([FromQuery, Required] int categoryId,
+                                                [FromQuery, Required] int categoryName,
                                                      [FromQuery, Required] int brandId)
         {
-            var products = await _context.Products.Where(q => q.Active == true)
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://undercutters.azurewebsites.net");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+            client.Timeout = TimeSpan.FromSeconds(5);
+
+            HttpResponseMessage productResponse = await client.GetAsync("api/Product?category_id=" + categoryId 
+                                                                                + "&category_name=" + categoryName 
+                                                                                     + "&brand_id=" + brandId 
+                                                                                    + "&min_price=" + 0 
+                                                                                    + "&max_price=" + 9999);
+            productResponse.EnsureSuccessStatusCode();
+
+            IEnumerable<UCProductDto> ucProducts = await productResponse.Content.ReadAsAsync<IEnumerable<UCProductDto>>();
+            var ucProductList = ucProducts.Select(c => new Product
+            {
+                Id = c.Id,
+                CategoryId = c.CategoryId,
+                BrandId = c.BrandId,
+                Name = c.Name,
+                Description = c.Description,
+                Price = c.Price,
+                StockLevel = 999
+            }).ToList();
+
+            var localProducts = await _context.Products.Where(q => q.Active == true)
                                             .Where(p => p.CategoryId == categoryId)
                                             .Where(p => p.BrandId == brandId).Include(p => p.Brand).ToListAsync();
+
+            var products = localProducts.Concat(ucProductList);
 
             var viewModel = await _context.Products.Select(p => new ProductStoreViewModel
             {

@@ -16,7 +16,7 @@ namespace Producks.Web.Models
         public string BrandName { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         public bool InStock { get; set; }
         [DataType(DataType.Date)]
         public string ExpectedRestock { get; set; }
