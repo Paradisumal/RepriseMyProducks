@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Producks.Data;
+using Producks.UnderCuttersFacade;
 
 namespace Producks.Web
 {
@@ -35,7 +36,9 @@ namespace Producks.Web
 
             services.AddDbContext<StoreDb>(options =>options.UseSqlServer(
                 Configuration.GetConnectionString("StoreConnection")));
-
+            services.AddScoped<ICategory, UCCategory>();
+            services.AddScoped<IBrand, UCBrand>();
+            services.AddScoped<IProduct, UCProduct>();
             services.AddMvc()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

@@ -17,5 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Producks.Data\Producks.Data.csproj" />
+    <ProjectReference Include="..\Producks.UnderCuttersFacade\Producks.UnderCuttersFacade.csproj" />
   </ItemGroup>
 </Project>

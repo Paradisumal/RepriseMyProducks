@@ -9,22 +9,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Producks.Data;
 using Producks.Web.Models;
+using Producks.UnderCuttersFacade;
 
 namespace Producks.Web.Controllers
 {
     public class StoreController : Controller
     {
         private readonly StoreDb _context;
+        private readonly ICategory _category;
+        private readonly IBrand _brand;
+        private readonly IProduct _product;
 
-        public StoreController(StoreDb context)
+        public StoreController(StoreDb context, ICategory category, IBrand brand, IProduct product)
         {
             _context = context;
+            _category = category;
+            _brand = brand;
+            _product = product;
         }
 
         // GET: ProductSearch
         public async Task<IActionResult> Search()
         {
-            var client = new HttpClient();
+            /*var client = new HttpClient();
             client.BaseAddress = new Uri("http://undercutters.azurewebsites.net");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
             client.Timeout = TimeSpan.FromSeconds(5);
@@ -47,10 +54,27 @@ namespace Producks.Web.Controllers
             {
                 Id = c.Id,
                 Name = c.Name
+            }).ToList();*/
+
+            var ucCategories = await _category.GetCategories();
+            var ucCategoryList = ucCategories.Select(c => new Category
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+
+            var ucBrands = await _brand.GetBrands();
+            var ucBrandList = ucBrands.Select(c => new Brand
+            {
+                Id = c.Id,
+                Name = c.Name
             }).ToList();
 
             var localCategories = await _context.Categories.Where(c => c.Active == true).ToListAsync();
             var localBrands = await _context.Brands.Where(c => c.Active == true).ToListAsync();
+
+            /*var categories = localCategories.Concat(ucCategoryList);
+            var brands = localBrands.Concat(ucBrandList);*/
 
             var categories = localCategories.Concat(ucCategoryList);
             var brands = localBrands.Concat(ucBrandList);
@@ -65,15 +89,15 @@ namespace Producks.Web.Controllers
 
         // GET: Products
         public async Task<IActionResult> Products([FromQuery, Required] int categoryId,
-                                                [FromQuery, Required] int categoryName,
+                                                [FromQuery, Required] string categoryName,
                                                      [FromQuery, Required] int brandId)
         {
-            var client = new HttpClient();
+            /*var client = new HttpClient();
             client.BaseAddress = new Uri("http://undercutters.azurewebsites.net");
             client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-            client.Timeout = TimeSpan.FromSeconds(5);
+            client.Timeout = TimeSpan.FromSeconds(5);*/
 
-            HttpResponseMessage productResponse = await client.GetAsync("api/Product?category_id=" + categoryId 
+            /*HttpResponseMessage productResponse = await client.GetAsync("api/Product?category_id=" + categoryId 
                                                                                 + "&category_name=" + categoryName 
                                                                                      + "&brand_id=" + brandId 
                                                                                     + "&min_price=" + 0 
@@ -81,6 +105,18 @@ namespace Producks.Web.Controllers
             productResponse.EnsureSuccessStatusCode();
 
             IEnumerable<UCProductDto> ucProducts = await productResponse.Content.ReadAsAsync<IEnumerable<UCProductDto>>();
+            var ucProductList = ucProducts.Select(c => new Product
+            {
+                Id = c.Id,
+                CategoryId = c.CategoryId,
+                BrandId = c.BrandId,
+                Name = c.Name,
+                Description = c.Description,
+                Price = c.Price,
+                StockLevel = 999
+            }).ToList();*/
+
+            var ucProducts = await _product.GetProducts(categoryId, categoryName, brandId);
             var ucProductList = ucProducts.Select(c => new Product
             {
                 Id = c.Id,
