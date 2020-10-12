@@ -46,19 +46,6 @@ namespace Producks.UnderCuttersFacade
             response.EnsureSuccessStatusCode();
             products = await response.Content.ReadAsAsync<List<UCProductDto>>();
 
-            /*IEnumerable<UCProductDto> ucProducts = await productResponse.Content.ReadAsAsync<IEnumerable<UCProductDto>>();
-
-            var ucProductList = ucProducts.Select(c => new Product
-            {
-                Id = c.Id,
-                CategoryId = c.CategoryId,
-                BrandId = c.BrandId,
-                Name = c.Name,
-                Description = c.Description,
-                Price = c.Price,
-                StockLevel = 999
-            }).ToList();*/
-
             return products;
         }
     }

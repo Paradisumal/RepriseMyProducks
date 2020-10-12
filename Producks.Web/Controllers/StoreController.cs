@@ -31,31 +31,6 @@ namespace Producks.Web.Controllers
         // GET: ProductSearch
         public async Task<IActionResult> Search()
         {
-            /*var client = new HttpClient();
-            client.BaseAddress = new Uri("http://undercutters.azurewebsites.net");
-            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-            client.Timeout = TimeSpan.FromSeconds(5);
-
-            HttpResponseMessage categoryResponse = await client.GetAsync("api/Category");
-            categoryResponse.EnsureSuccessStatusCode();
-
-            IEnumerable<UCCategoryDto> ucCategories = await categoryResponse.Content.ReadAsAsync<IEnumerable<UCCategoryDto>>();
-            var ucCategoryList = ucCategories.Select(c => new Category 
-            {
-                Id = c.Id,
-                Name = c.Name
-            }).ToList();
-
-            HttpResponseMessage brandResponse = await client.GetAsync("api/Brand");
-            brandResponse.EnsureSuccessStatusCode();
-
-            IEnumerable<UCBrandDto> ucBrands = await brandResponse.Content.ReadAsAsync<IEnumerable<UCBrandDto>>();
-            var ucBrandList = ucBrands.Select(c => new Brand
-            {
-                Id = c.Id,
-                Name = c.Name
-            }).ToList();*/
-
             var ucCategories = await _category.GetCategories();
             var ucCategoryList = ucCategories.Select(c => new Category
             {
@@ -73,9 +48,6 @@ namespace Producks.Web.Controllers
             var localCategories = await _context.Categories.Where(c => c.Active == true).ToListAsync();
             var localBrands = await _context.Brands.Where(c => c.Active == true).ToListAsync();
 
-            /*var categories = localCategories.Concat(ucCategoryList);
-            var brands = localBrands.Concat(ucBrandList);*/
-
             var categories = localCategories.Concat(ucCategoryList);
             var brands = localBrands.Concat(ucBrandList);
 
@@ -92,30 +64,6 @@ namespace Producks.Web.Controllers
                                                 [FromQuery, Required] string categoryName,
                                                      [FromQuery, Required] int brandId)
         {
-            /*var client = new HttpClient();
-            client.BaseAddress = new Uri("http://undercutters.azurewebsites.net");
-            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-            client.Timeout = TimeSpan.FromSeconds(5);*/
-
-            /*HttpResponseMessage productResponse = await client.GetAsync("api/Product?category_id=" + categoryId 
-                                                                                + "&category_name=" + categoryName 
-                                                                                     + "&brand_id=" + brandId 
-                                                                                    + "&min_price=" + 0 
-                                                                                    + "&max_price=" + 9999);
-            productResponse.EnsureSuccessStatusCode();
-
-            IEnumerable<UCProductDto> ucProducts = await productResponse.Content.ReadAsAsync<IEnumerable<UCProductDto>>();
-            var ucProductList = ucProducts.Select(c => new Product
-            {
-                Id = c.Id,
-                CategoryId = c.CategoryId,
-                BrandId = c.BrandId,
-                Name = c.Name,
-                Description = c.Description,
-                Price = c.Price,
-                StockLevel = 999
-            }).ToList();*/
-
             var ucProducts = await _product.GetProducts(categoryId, categoryName, brandId);
             var ucProductList = ucProducts.Select(c => new Product
             {
